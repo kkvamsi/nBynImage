@@ -4,7 +4,7 @@ import math
 from enum import Enum
 
 #global constants
-userInput = {"rows":0,"columns":0,"paperSize":''}
+userInput = {"rows":0,"columns":0,"paperSize":'',"imgPath":''}
 paperDimenDict = {"a0":(841,1189),"a1":(594,841),"a2":(420,594),"a3":(297,420),"a4":(210,297)}
 
 class paperSizeEnum(Enum):
@@ -26,8 +26,11 @@ def driver():
     lengthResizeDimenInMM = getLengthResizeDimen(nColumns, paperDimen)
     breadthResizeDimenInMM = getBreadthResizeDimen(nRows,paperDimen)
 
-    lengthInPixels = math.floor(getMMtoPixels(lengthResizeDimenInMM))
-    breadthInPixels = math.floor(getMMtoPixels(breadthResizeDimenInMM))
+    lengthInPixels = math.floor(getMMtoPixels(lengthResizeDimenInMM)) - 10
+    breadthInPixels = math.floor(getMMtoPixels(breadthResizeDimenInMM)) -10
+    imageHandler = loadImage()
+    resizeImage(imageHandler,(int(lengthInPixels),int(breadthInPixels)))
+
 
     print(lengthInPixels,breadthInPixels)
 
@@ -35,7 +38,7 @@ def getInputFromUser(userInput):
     userInput["rows"] = input("Enter rows : ")
     userInput["columns"] = input("Enter columns : ")
     userInput["paperSize"] = input("Enter paper size Eg: a4,a3 etc: ").lower()
-
+    userInput["imgPath"] = './sampleImages/sample_image2.png'
     validateUserInput(userInput)
     return (userInput)
 
@@ -67,6 +70,14 @@ def getBreadthResizeDimen(nRow,paperDimensionTuple):
 def getMMtoPixels(inputInMM):
     return inputInMM * 3.7795275591;
 
+def loadImage():
+   imgHandler = Image.open(userInput['imgPath'])
+   return imgHandler
+
+
+def resizeImage(imgHandler,resizeDimensions):
+    imgHandler.thumbnail(resizeDimensions)
+    imgHandler.save('./sampleImages/sampleImage_resized_{}_{}.png'.format(resizeDimensions[0],resizeDimensions[1]))
 
 # input from user -> nXm and size of paper to be printed
 
